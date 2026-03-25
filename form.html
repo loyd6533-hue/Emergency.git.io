@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency System Login</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #d32f2f, #f44336);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 350px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #f55e5e;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .container {
+      padding: 15px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- INITIAL SCREEN -->
+<div id="initialPage" class="login-box">
+  <h2>Emergency Portal</h2>
+  <button onclick="showSignup()" style="margin-left: 5px; margin-bottom: 20px;">Sign Up</button>
+</div>
+
+<!-- SIGNUP SCREEN -->
+<div id="signupPage" class="login-box hidden">
+  <h2>Emergency Sign Up</h2>
+  <input type="text" id="name" placeholder="Enter your name" required>
+  <input type="email" id="email" placeholder="Enter your email" required>
+  <input type="text" id="contact" placeholder="Enter your contact number" required>
+  <input type="text" id="address" placeholder="Enter your address" required>
+  <button onclick="signup()" style="margin-bottom: 5px;">Sign Up</button>
+  <button onclick="backToInitial()" style="margin-left: 1px; ">Back</button>
+</div>
+
+<!-- QR CODE SCREEN -->
+<div id="qrPage" class="login-box hidden">
+  <h2>Your QR Code</h2>
+  <div id="qrcodeDisplay" style="margin-top: 20px; display:flex; justify-content:center; flex-direction: column; align-items: center;"></div>
+  <button onclick="backToInitial()" style="margin-top: 20px;">Back to Home</button>
+</div>
+
+</div>
+
+<!-- MAIN WEBSITE -->
+<div id="mainPage" class="hidden">
+  <header style="background:#d32f2f;color:white;padding:15px;text-align:center;">
+    <h1>Emergency Information Portal</h1>
+    <p id="WelcomeMsg"></p>
+  </header>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+          <h2>Information Contact</h2>
+          <p id="InfoContact"></p>
+      </div>
+      <div class="card">
+        <h2>Emergency Details</h2>
+        <p id="EmergencyDetails"></p>
+      </div>
+      <div class="card">
+        <h2>Emergency Contacts</h2>
+        <ul>
+          <li>Police: 911</li>
+          <li>Fire: 160</li>
+          <li>Ambulance: 911</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Safety Tips</h2>
+        <p>Stay calm and call authorities immediately.</p>
+        <p>Follow official instructions.</p>
+      </div>
+
+      <div class="card">
+        <h2>Quick Info</h2>
+        <button onclick="showInfo()">Show Emergency Info</button>
+        <p id="infoText"></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  function showSignup() {
+    document.getElementById("initialPage").style.display = "none";
+    document.getElementById("signupPage").style.display = "block";
+  }
+
+  function backToInitial() {
+    document.getElementById("initialPage").style.display = "block";
+    document.getElementById("signupPage").style.display = "none";
+    document.getElementById("qrPage").style.display = "none";
+    document.getElementById("mainPage").style.display = "none";
+  }
+
+  function parseQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name");
+    const email = params.get("email");
+    const contact = params.get("contact");
+    const address = params.get("address");
+    if (name && email && contact && address) {
+      window.__userInfo = {
+        name,
+        email,
+        contact,
+        address,
+        generatedAt: params.get("generatedAt") || new Date().toISOString(),
+        app: "Emergency Information Portal"
+      };
+
+      document.getElementById("initialPage").style.display = "none";
+      document.getElementById("signupPage").style.display = "none";
+      document.getElementById("qrPage").style.display = "none";
+      document.getElementById("mainPage").style.display = "block";
+      document.getElementById("InfoContact").innerText = "Name: " + name + " | Contact: " + contact + " | Email: " + email;
+      document.getElementById("EmergencyDetails").innerText = "Address: " + address;
+    }
+  }
+
+  function signup() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const contact = document.getElementById("contact").value;
+    const address = document.getElementById("address").value;
+
+    if (name === "" || email === "" || contact === "" || address === "") {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    window.__userInfo = {
+      name,
+      email,
+      contact,
+      address,
+      generatedAt: new Date().toISOString(),
+      app: "Emergency Information Portal"
+    };
+
+    document.getElementById("initialPage").style.display = "none";
+    document.getElementById("signupPage").style.display = "none";
+    document.getElementById("qrPage").style.display = "block";
+
+    generateQRCode();
+  }
+
+  function generateQRCode() {
+    const target = document.getElementById("qrcodeDisplay");
+    target.innerHTML = "";
+
+    const info = window.__userInfo;
+    const portalUrl = new URL(window.location.href);
+    portalUrl.searchParams.set("name", info.name);
+    portalUrl.searchParams.set("email", info.email);
+    portalUrl.searchParams.set("contact", info.contact);
+    portalUrl.searchParams.set("address", info.address);
+    portalUrl.searchParams.set("generatedAt", info.generatedAt);
+
+    const qrText = portalUrl.href;
+
+    window.__qrCode = new QRCode(target, {
+      text: qrText,
+      width: 280,
+      height: 280,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+
+    const infoText = document.createElement("p");
+    infoText.style.textAlign = "center";
+    infoText.style.fontSize = "14px";
+    infoText.style.marginTop = "15px";
+    infoText.textContent = "Scan this QR to access the Emergency Portal";
+    target.appendChild(infoText);
+
+    const downloadBtn = document.createElement("button");
+    downloadBtn.textContent = "Download QR PNG";
+    downloadBtn.onclick = downloadQR;
+    downloadBtn.style.marginTop = "15px";
+    target.appendChild(downloadBtn);
+  }
+
+  function downloadQR() {
+    if (!window.__qrCode) {
+      alert("Generate QR code first.");
+      return;
+    }
+
+    const canvas = document.querySelector("#qrcodeDisplay canvas");
+    if (!canvas) {
+      alert("QR canvas not found.");
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.download = "emergency-qr.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
+
+  function showInfo() {
+    document.getElementById("infoText").innerText =
+      "In an emergency, stay calm, contact authorities, and go to a safe place.";
+  }
+
+  parseQuery();
+</script>
+</body>
+</html>
