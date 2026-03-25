@@ -102,9 +102,7 @@
 <div id="qrPage" class="login-box hidden">
   <h2>Your QR Code</h2>
   <div id="qrcodeDisplay" style="margin-top: 20px; display:flex; justify-content:center; flex-direction: column; align-items: center;"></div>
-  <video id="qrVideo" style="width: 100%; max-width: 300px; margin: 20px 0; display: none;"></video>
-  <button onclick="startScan()" style="margin-bottom: 10px;">Scan QR from another device</button>
-  <button onclick="backToInitial()" style="margin-top: 10px;">Back to Home</button>
+  <button onclick="backToInitial()" style="margin-top: 20px;">Back to Home</button>
 </div>
 
 </div>
@@ -157,7 +155,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 <script>
   function showSignup() {
     document.getElementById("initialPage").style.display = "none";
@@ -193,21 +190,6 @@
       document.getElementById("mainPage").style.display = "block";
       document.getElementById("InfoContact").innerText = "Name: " + name + " | Contact: " + contact + " | Email: " + email;
       document.getElementById("EmergencyDetails").innerText = "Address: " + address;
-      document.getElementById("completeProfile").innerHTML = `
-        <strong>Personal Information:</strong><br>
-        Name: ${name}<br>
-        Email: ${email}<br>
-        Contact: ${contact}<br>
-        Address: ${address}<br><br>
-        <strong>Emergency Contacts:</strong><br>
-        Police: 911<br>
-        Fire: 160<br>
-        Ambulance: 911<br><br>
-        <strong>Safety Tips:</strong><br>
-        Stay calm and call authorities immediately.<br>
-        Follow official instructions.<br><br>
-        <strong>Generated:</strong> ${new Date().toLocaleString()}
-      `;
     }
   }
 
@@ -291,30 +273,6 @@
     link.download = "emergency-qr.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
-  }
-
-  let scanner = null;
-
-  function startScan() {
-    const video = document.getElementById('qrVideo');
-    video.style.display = 'block';
-
-    scanner = new Instascan.Scanner({ video: video });
-
-    scanner.addListener('scan', function (content) {
-      // content is the scanned QR text (URL)
-      window.location.href = content;
-    });
-
-    Instascan.Camera.getCameras().then(function (cameras) {
-      if (cameras.length > 0) {
-        scanner.start(cameras[0]);
-      } else {
-        alert('No cameras found.');
-      }
-    }).catch(function (e) {
-      alert('Camera access denied or not supported. Make sure you are on HTTPS.');
-    });
   }
 
   function showInfo() {
