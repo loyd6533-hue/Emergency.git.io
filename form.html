@@ -145,6 +145,11 @@
         <p id="infoText"></p>
       </div>
 
+      <div class="card">
+        <h2>Complete Emergency Profile</h2>
+        <div id="completeProfile" style="text-align: left;"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -185,6 +190,21 @@
       document.getElementById("mainPage").style.display = "block";
       document.getElementById("InfoContact").innerText = "Name: " + name + " | Contact: " + contact + " | Email: " + email;
       document.getElementById("EmergencyDetails").innerText = "Address: " + address;
+      document.getElementById("completeProfile").innerHTML = `
+        <strong>Personal Information:</strong><br>
+        Name: ${name}<br>
+        Email: ${email}<br>
+        Contact: ${contact}<br>
+        Address: ${address}<br><br>
+        <strong>Emergency Contacts:</strong><br>
+        Police: 911<br>
+        Fire: 160<br>
+        Ambulance: 911<br><br>
+        <strong>Safety Tips:</strong><br>
+        Stay calm and call authorities immediately.<br>
+        Follow official instructions.<br><br>
+        <strong>Generated:</strong> ${new Date().toLocaleString()}
+      `;
     }
   }
 
